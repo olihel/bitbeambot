@@ -30,27 +30,27 @@ board.on("ready", function() {
   };
 
   var dancer;
-        
+
   start_dance = function(){
     if (!dancer)
       dancer = setInterval(dance, 500);
-  }
-        
+  };
+
   stop_dance = function(){
     if (dancer){
       clearInterval(dancer);
       dancer=null;
     }
-  }
+  };
 
   board.repl.inject({
     dance: start_dance,
     chill: stop_dance
   });
 
-  servo1.on("error", function () { console.log(arguments); })
-  servo2.on("error", function () { console.log(arguments); })
-  servo3.on("error", function () { console.log(arguments); })
+  servo1.on("error", function () { console.log(arguments); });
+  servo2.on("error", function () { console.log(arguments); });
+  servo3.on("error", function () { console.log(arguments); });
 });
 
 go = function(x,y,z) {
@@ -59,4 +59,4 @@ go = function(x,y,z) {
   s2.move(angles[2]);
   s3.move(angles[3]);
   console.log(angles);
-}
+};
