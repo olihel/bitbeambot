@@ -1,0 +1,27 @@
+{
+  "globals": {
+    "module": false,
+    "define": false,
+    "require": false
+  },
+
+  "forin": true,
+  "immed": true,
+  "latedef": true,
+  "noarg": true,
+  "noempty": true,
+  "nonew": true,
+  "quotmark": true,
+  "undef": false,
+  "unused": true,
+  "trailing": true,
+
+  "loopfunc": true,
+  "expr": true,
+
+  "browser": true,
+  "devel": true,
+  "jquery": true,
+
+  "white": false
+}
