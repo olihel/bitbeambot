@@ -1,5 +1,7 @@
 # Bitbeambot
 
+by Jason Huggins ([@github](https://github.com/hugs/bitbeambot), [bitbeam.org](http://bitbeam.org))
+
 ## The video game playing, software testing robot. 
 
 ### Setup instructions (OSX)
