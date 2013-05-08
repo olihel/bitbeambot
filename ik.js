@@ -5,11 +5,11 @@
 
     // Specific geometry for bitbeambot:
     // http://flic.kr/p/cYaQah
-    var e=83.138;
-    var f=103.9;
-    var re = 8 * 18;
-    var rf = 8 * 7;
-  
+    var e = 65; //83.138;
+    var f = 214.9; //103.9;
+    var re = 129; //8 * 18;
+    var rf = 82; //8 * 7;
+
     exports.updateSize = function(parameters) {
       e = parameters[0];
       f = parameters[1];
@@ -20,7 +20,7 @@
       exports.re = re;
       exports.rf = rf;
     }
-    
+
     exports.getSize = function() {
       return Array(e,f,re,rf);
     }
@@ -41,31 +41,31 @@
       var x0 = 0.0;
       var y0 = 0.0;
       var z0 = 0.0;
-      
+
       var t = (f-e)*tan30/2.0;
       var dtr = pi/180.0;
-      
+
       theta1 *= dtr;
       theta2 *= dtr;
       theta3 *= dtr;
-      
+
       var y1 = -(t+rf*Math.cos(theta1));
       var z1 = -rf*Math.sin(theta1);
-      
+
       var y2 = (t+rf*Math.cos(theta2))*sin30;
       var x2 = y2*tan60;
       var z2 = -rf*Math.sin(theta2);
-      
+
       var y3 = (t+rf*Math.cos(theta3))*sin30;
       var x3 = -y3*tan60;
       var z3 = -rf*Math.sin(theta3);
-      
+
       var dnm = (y2-y1)*x3-(y3-y1)*x2;
-      
+
       var w1 = y1*y1 + z1*z1;
       var w2 = x2*x2 + y2*y2 + z2*z2;
       var w3 = x3*x3 + y3*y3 + z3*z3;
-      
+
       // x = (a1*z + b1)/dnm
       var a1 = (z2-z1)*(y3-y1)-(z3-z1)*(y2-y1);
       var b1=-((w2-w1)*(y3-y1)-(w3-w1)*(y2-y1))/2.0;
@@ -116,7 +116,7 @@
       var theta3 = 0;
       var status = delta_calcAngleYZ(x0,y0,z0);
 
-      if (status[0]==0) { 
+      if (status[0]==0) {
         theta1 = status[1];
         status = delta_calcAngleYZ(x0*cos120+y0*sin120,y0*cos120-x0*sin120,z0,theta2);
       }
