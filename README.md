@@ -19,8 +19,10 @@ cd bitbeambot
 npm install
 ```
 
-- run the robot script:
+- run the robot scripts:
 
 ```Bash
 node bot.js
+node keyboard-angles.js
+node keyboard-coords.js
 ```
