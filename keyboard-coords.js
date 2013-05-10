@@ -81,12 +81,12 @@
             return;
           }
           if (key.name === 'q') {
-            --axes[2];
+            ++axes[2];
             updatePosition();
             return;
           }
           if (key.name === 'a') {
-            ++axes[2];
+            --axes[2];
             updatePosition();
             return;
           }
