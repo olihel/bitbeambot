@@ -12,7 +12,6 @@
  */
 
 (function () {
-  var RECORD_INTERVAL = 50;
   var RECORD_OUTPUT = 'recorded.json';
 
   var fs = require('fs');
@@ -22,8 +21,8 @@
 
   var board = new five.Board({ debug: false});
   var axes = [0, 0, -100];
-  var recordIntervalID = null;
   var recorded = [];
+  var playbackIntervalID = null;
 
   board.on('ready', function() {
     var servo1 = five.Servo({pin: 9});
@@ -51,16 +50,22 @@
     };
 
     var playback = function () {
+      var pos;
+
+      updatePosition();
+
       if (!recorded.length) {
         console.log('playback finished');
-        clearInterval(recordIntervalID);
+        clearInterval(playbackIntervalID);
         return;
       }
-      var pos = recorded.shift();
+
+      pos = recorded.shift();
       axes[0] = pos.x;
       axes[1] = pos.y;
       axes[2] = pos.z;
-      updatePosition();
+
+      playbackIntervalID = setTimeout(playback, pos.delay || 40);
     };
 
     updatePosition();
@@ -73,16 +78,14 @@
       process.stdin.on('keypress', function (chunk, key) {
         if (key) {
           if (key.name === 'escape') {
-            if (recordIntervalID) {
-              clearInterval(recordIntervalID);
-            }
+            playbackIntervalID && clearInterval(playbackIntervalID);
             process.exit();
           }
         }
       });
 
       recorded = JSON.parse(fs.readFileSync(RECORD_OUTPUT));
-      setInterval(playback, RECORD_INTERVAL);
+      recorded.length && playback();
     }());
   });
 }());
