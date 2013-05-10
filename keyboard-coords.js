@@ -50,11 +50,12 @@
       console.log('x:', axes[0], 'y:', axes[1], 'z:', axes[2]);
     };
 
-    var recordInterval = function () {
+    var recordInterval = function (delay) {
       recorded.push({
         x: axes[0],
         y: axes[1],
-        z: axes[2]
+        z: axes[2],
+        delay: delay
       });
     };
 
@@ -67,21 +68,28 @@
 
       console.log('\n### control x/y axes:   up/down/left/right keys');
       console.log('### control z axis:     q/a keys');
+      console.log('### start recording:    r key');
+      console.log('### record current pos: space key');
       console.log('### exit:               esc key');
 
       process.stdin.on('keypress', function (chunk, key) {
         if (key) {
           if (key.name === 'escape') {
-            if (recordIntervalID) {
-              clearInterval(recordIntervalID);
+            if (recorded.length) {
+              recordIntervalID && clearInterval(recordIntervalID);
               fs.writeFileSync(RECORD_OUTPUT, JSON.stringify(recorded));
               console.log('recorded movement saved to ' + RECORD_OUTPUT);
             }
             process.exit();
           }
           if (key.name === 'r') {
-            recordIntervalID = setInterval(recordInterval, RECORD_INTERVAL);
+            recordIntervalID = setInterval(recordInterval, RECORD_INTERVAL, [RECORD_INTERVAL]);
             console.log('recording started!');
+            return;
+          }
+          if (key.name === 'space') {
+            recordInterval(1000);
+            console.log('record position ' + axes);
             return;
           }
           if (key.name === 'left') {
