@@ -3,6 +3,7 @@
     "module": false,
     "define": false,
     "require": false,
+    "exports": false,
     "process": false
   },
 
