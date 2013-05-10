@@ -12,12 +12,18 @@
  */
 
 (function () {
+  var RECORD_INTERVAL = 50;
+  var RECORD_OUTPUT = 'recorded.json';
+
+  var fs = require('fs');
   var five = require('johnny-five');
   var ik = require('./ik');
   var keypress = require('keypress');
 
   var board = new five.Board({ debug: false});
   var axes = [0, 0, -100];
+  var recordIntervalID = null;
+  var recorded = [];
 
   board.on('ready', function() {
     var servo1 = five.Servo({pin: 9});
@@ -44,6 +50,14 @@
       console.log('x:', axes[0], 'y:', axes[1], 'z:', axes[2]);
     };
 
+    var recordInterval = function () {
+      recorded.push({
+        x: axes[0],
+        y: axes[1],
+        z: axes[2]
+      });
+    };
+
     updatePosition();
 
     (function () {
@@ -58,7 +72,17 @@
       process.stdin.on('keypress', function (chunk, key) {
         if (key) {
           if (key.name === 'escape') {
+            if (recordIntervalID) {
+              clearInterval(recordIntervalID);
+              fs.writeFileSync(RECORD_OUTPUT, JSON.stringify(recorded));
+              console.log('recorded movement saved to ' + RECORD_OUTPUT);
+            }
             process.exit();
+          }
+          if (key.name === 'r') {
+            recordIntervalID = setInterval(recordInterval, RECORD_INTERVAL);
+            console.log('recording started!');
+            return;
           }
           if (key.name === 'left') {
             --axes[0];
