@@ -2,7 +2,8 @@
   "globals": {
     "module": false,
     "define": false,
-    "require": false
+    "require": false,
+    "process": false
   },
 
   "forin": true,
@@ -12,7 +13,7 @@
   "noempty": true,
   "nonew": true,
   "quotmark": true,
-  "undef": false,
+  "undef": true,
   "unused": true,
   "trailing": true,
 
