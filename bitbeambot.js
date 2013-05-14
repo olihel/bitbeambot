@@ -13,15 +13,55 @@
 
 (function(exports){
   var CONFIG_FILE = 'bitbeambot-config.json';
+  var CONFIG_DEFAULT = {
+    movement: {
+      stepX: 1,
+      stepY: 1,
+      stepZ: 1
+    },
+    board: {
+      debug: false
+    }
+  };
 
   var fs = require('fs');
   var five = require('johnny-five');
   var ik = require('./ik');
 
-  var config = fs.existsSync(CONFIG_FILE) ? JSON.parse(fs.readFileSync(CONFIG_FILE)) : {};
-  var board = new five.Board(config.board || { debug: false});
+  var config = fs.existsSync(CONFIG_FILE) ? JSON.parse(fs.readFileSync(CONFIG_FILE)) : CONFIG_DEFAULT;
+  var board = new five.Board(config.board);
   var servo1, servo2, servo3, servos;
   var axes = [0, 0, -100];  // x, y, z
+
+  var updatePosition = function () {
+    var angles = ik.inverse(axes[0], axes[1], axes[2]);
+    servo1.move(angles[1]);
+    servo2.move(angles[2]);
+    servo3.move(angles[3]);
+    console.log('x:', axes[0], 'y:', axes[1], 'z:', axes[2]);
+  };
+
+  var moveRelative = function (direction) {
+    if (direction === 'up') {
+      axes[0] += -config.movement.stepX;
+      updatePosition();
+    } else if (direction === 'down') {
+      axes[0] += config.movement.stepX;
+      updatePosition();
+    } if (direction === 'left') {
+      axes[1] += config.movement.stepY;
+      updatePosition();
+    } if (direction === 'right') {
+      axes[1] += -config.movement.stepY;
+      updatePosition();
+    } if (direction === 'q') {
+      axes[2] += config.movement.stepZ;
+      updatePosition();
+    } if (direction === 'a') {
+      axes[2] += -config.movement.stepZ;
+      updatePosition();
+    }
+  };
 
   var initialize = function (readyHandler) {
     board.on('ready', function() {
@@ -45,16 +85,9 @@
     });
   };
 
-  var updatePosition = function () {
-    var angles = ik.inverse(axes[0], axes[1], axes[2]);
-    servo1.move(angles[1]);
-    servo2.move(angles[2]);
-    servo3.move(angles[3]);
-    console.log('x:', axes[0], 'y:', axes[1], 'z:', axes[2]);
-  };
-
   exports.config = config;
   exports.axes = axes;
   exports.initialize = initialize;
   exports.updatePosition = updatePosition;
+  exports.moveRelative = moveRelative;
 }(typeof exports === 'undefined' ? this.bitbeambot = {} : exports));

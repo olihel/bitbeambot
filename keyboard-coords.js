@@ -53,24 +53,8 @@
         } else if (key.name === 'space') {
           console.log('record position ' + bot.axes);
           recordPosition(1000);
-        } else if (key.name === 'left') {
-          --bot.axes[0];
-          bot.updatePosition();
-        } else if (key.name === 'right') {
-          ++bot.axes[0];
-          bot.updatePosition();
-        } if (key.name === 'up') {
-          ++bot.axes[1];
-          bot.updatePosition();
-        } if (key.name === 'down') {
-          --bot.axes[1];
-          bot.updatePosition();
-        } if (key.name === 'q') {
-          ++bot.axes[2];
-          bot.updatePosition();
-        } if (key.name === 'a') {
-          --bot.axes[2];
-          bot.updatePosition();
+        } else {
+          bot.moveRelative(key.name);
         }
       }
     });
