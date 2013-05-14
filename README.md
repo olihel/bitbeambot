@@ -1,7 +1,5 @@
 # Bitbeambot
 
-by Jason Huggins ([@github](https://github.com/hugs/bitbeambot), [bitbeam.org](http://bitbeam.org))
-
 ## The video game playing, software testing robot. 
 
 ### Setup instructions (OSX)
@@ -14,7 +12,7 @@ by Jason Huggins ([@github](https://github.com/hugs/bitbeambot), [bitbeam.org](h
 - clone this repo and install dependencies:
 
 ```Bash
-git clone git@github.com:hugs/bitbeambot.git
+git clone git@github.com:olihel/bitbeambot.git
 cd bitbeambot
 npm install
 ```
@@ -25,4 +23,10 @@ npm install
 node bot.js
 node keyboard-angles.js
 node keyboard-coords.js
+node playback.js
 ```
+
+### Credits
+This project is based on work by Jason Huggins ([@github](https://github.com/hugs/bitbeambot), [bitbeam.org](http://bitbeam.org)), he actually provided the hardware parts, too.
+
+Thanks to [SinnerSchrader](http://www.sinnerschrader.com/) for support and the time to work on this project.
