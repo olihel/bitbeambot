@@ -44,7 +44,10 @@
       if (key) {
         if (key.name === 'escape') {
           playbackIntervalID && clearInterval(playbackIntervalID);
-          process.exit();
+          bot.moveToOrigin();
+          setTimeout(function () {
+            process.exit();
+          }, 1500);
         }
       }
     });

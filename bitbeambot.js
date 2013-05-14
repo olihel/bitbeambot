@@ -14,6 +14,11 @@
 (function(exports){
   var CONFIG_FILE = 'bitbeambot-config.json';
   var CONFIG_DEFAULT = {
+    origin: {
+      x: 0,
+      y: 0,
+      z: -100
+    },
     movement: {
       stepX: 1,
       stepY: 1,
@@ -39,6 +44,13 @@
     servo2.move(angles[2]);
     servo3.move(angles[3]);
     console.log('x:', axes[0], 'y:', axes[1], 'z:', axes[2]);
+  };
+
+  var moveToOrigin = function () {
+    axes[0] = config.origin.x;
+    axes[1] = config.origin.y;
+    axes[2] = config.origin.z;
+    updatePosition();
   };
 
   var moveRelative = function (direction) {
@@ -90,4 +102,5 @@
   exports.initialize = initialize;
   exports.updatePosition = updatePosition;
   exports.moveRelative = moveRelative;
+  exports.moveToOrigin = moveToOrigin;
 }(typeof exports === 'undefined' ? this.bitbeambot = {} : exports));

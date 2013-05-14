@@ -45,7 +45,10 @@
             fs.writeFileSync(RECORD_OUTPUT, JSON.stringify(recorded));
             console.log('recorded movement saved to ' + RECORD_OUTPUT);
           }
-          process.exit();
+          bot.moveToOrigin();
+          setTimeout(function () {
+            process.exit();
+          }, 1500);
         }
         if (key.name === 'r') {
           console.log('start recording');
