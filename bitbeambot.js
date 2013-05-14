@@ -12,9 +12,14 @@
  */
 
 (function(exports){
+  var CONFIG_FILE = 'bitbeambot-config.json';
+
+  var fs = require('fs');
   var five = require('johnny-five');
   var ik = require('./ik');
-  var board = new five.Board({ debug: false});
+
+  var config = fs.existsSync(CONFIG_FILE) ? JSON.parse(fs.readFileSync(CONFIG_FILE)) : {};
+  var board = new five.Board(config.board || { debug: false});
   var servo1, servo2, servo3, servos;
   var axes = [0, 0, -100];  // x, y, z
 
@@ -48,6 +53,7 @@
     console.log('x:', axes[0], 'y:', axes[1], 'z:', axes[2]);
   };
 
+  exports.config = config;
   exports.axes = axes;
   exports.initialize = initialize;
   exports.updatePosition = updatePosition;
