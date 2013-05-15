@@ -19,7 +19,14 @@
   var playback = function () {
     var pos = recorded.shift();
 
-    bot.moveTo(pos.x, pos.y, pos.z);
+    if (pos.delay < bot.config.tween.duration) {
+      bot.axes[0] = pos.x;
+      bot.axes[1] = pos.y;
+      bot.axes[2] = pos.z;
+      bot.updatePosition();
+    } else {
+      bot.moveTo(pos.x, pos.y, pos.z);
+    }
 
     if (!recorded.length) {
       clearInterval(playbackIntervalID);
