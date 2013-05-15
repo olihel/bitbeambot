@@ -26,17 +26,26 @@
     },
     board: {
       debug: false
+    },
+    tween: {
+      duration: 400
     }
   };
 
   var fs = require('fs');
   var five = require('johnny-five');
   var ik = require('./ik');
+  var Tweenable = require('./shifty');
 
   var config = fs.existsSync(CONFIG_FILE) ? JSON.parse(fs.readFileSync(CONFIG_FILE)) : CONFIG_DEFAULT;
   var board = new five.Board(config.board);
   var servo1, servo2, servo3, servos;
   var axes = [0, 0, -100];  // x, y, z
+
+  var tweenable = new Tweenable({
+    fps: 60,
+    easing: 'easeOutCubic'
+  });
 
   var updatePosition = function () {
     var angles = ik.inverse(axes[0], axes[1], axes[2]);
@@ -46,11 +55,25 @@
     console.log('x:', axes[0], 'y:', axes[1], 'z:', axes[2]);
   };
 
+  var moveTo = function (x, y, z) {
+    tweenable.tween({
+      from: { x: axes[0], y: axes[1], z: axes[2] },
+      to: { x: x, y: y, z: z },
+      duration: config.tween.duration,
+      easing: 'easeOutQuad',
+      step: function (e) {
+        console.log(e);
+        axes[0] = e.x;
+        axes[1] = e.y;
+        axes[2] = e.z;
+        updatePosition();
+      },
+      callback: function () { console.log('done'); }
+    });
+  };
+
   var moveToOrigin = function () {
-    axes[0] = config.origin.x;
-    axes[1] = config.origin.y;
-    axes[2] = config.origin.z;
-    updatePosition();
+    moveTo(config.origin.x, config.origin.y, config.origin.z);
   };
 
   var moveRelative = function (direction) {
@@ -86,12 +109,16 @@
         servo1: servo1, s1: servo1,
         servo2: servo2, s2: servo2,
         servo3: servo3, s3: servo3,
-        servos: servos
+        servos: servos,
+        moveTo: moveTo,
+        moveToOrigin: moveToOrigin
       });
 
       servo1.on('error', function () { console.log(arguments); });
       servo2.on('error', function () { console.log(arguments); });
       servo3.on('error', function () { console.log(arguments); });
+
+      moveToOrigin();
 
       readyHandler();
     });
@@ -102,5 +129,6 @@
   exports.initialize = initialize;
   exports.updatePosition = updatePosition;
   exports.moveRelative = moveRelative;
+  exports.moveTo = moveTo;
   exports.moveToOrigin = moveToOrigin;
 }(typeof exports === 'undefined' ? this.bitbeambot = {} : exports));

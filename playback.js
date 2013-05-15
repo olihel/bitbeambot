@@ -17,22 +17,20 @@
   var playbackIntervalID = null;
 
   var playback = function () {
-    var pos;
+    var pos = recorded.shift();
 
-    bot.updatePosition();
+    bot.moveTo(pos.x, pos.y, pos.z);
 
     if (!recorded.length) {
-      console.log('playback finished');
       clearInterval(playbackIntervalID);
-      return;
+      bot.moveToOrigin();
+      setTimeout(function () {
+        console.log('playback finished');
+        process.exit();
+      }, 500);
+    } else {
+      playbackIntervalID = setTimeout(playback, recorded[0].delay || 40);
     }
-
-    pos = recorded.shift();
-    bot.axes[0] = pos.x;
-    bot.axes[1] = pos.y;
-    bot.axes[2] = pos.z;
-
-    playbackIntervalID = setTimeout(playback, pos.delay || 40);
   };
 
   bot.initialize(function () {
@@ -47,12 +45,14 @@
           bot.moveToOrigin();
           setTimeout(function () {
             process.exit();
-          }, 1500);
+          }, 500);
         }
       }
     });
 
     recorded = JSON.parse(fs.readFileSync(RECORD_OUTPUT));
-    recorded.length && playback();
+    if (recorded.length) {
+      playbackIntervalID = setTimeout(playback, recorded[0].delay || 40);
+    }
   });
 }());
