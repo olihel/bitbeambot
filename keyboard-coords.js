@@ -61,7 +61,5 @@
         }
       }
     });
-
-    bot.updatePosition();
   });
 }());
