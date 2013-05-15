@@ -43,7 +43,6 @@
   var axes = [0, 0, -100];  // x, y, z
 
   var tweenable = new Tweenable({
-    fps: 60,
     easing: 'easeOutCubic'
   });
 
@@ -52,7 +51,6 @@
     servo1.move(angles[1]);
     servo2.move(angles[2]);
     servo3.move(angles[3]);
-    console.log('x:', axes[0], 'y:', axes[1], 'z:', axes[2]);
   };
 
   var moveTo = function (x, y, z) {
@@ -60,15 +58,15 @@
       from: { x: axes[0], y: axes[1], z: axes[2] },
       to: { x: x, y: y, z: z },
       duration: config.tween.duration,
-      easing: 'easeOutQuad',
       step: function (e) {
-        console.log(e);
         axes[0] = e.x;
         axes[1] = e.y;
         axes[2] = e.z;
         updatePosition();
       },
-      callback: function () { console.log('done'); }
+      callback: function () {
+        console.log('x:', axes[0], 'y:', axes[1], 'z:', axes[2]);
+      }
     });
   };
 
