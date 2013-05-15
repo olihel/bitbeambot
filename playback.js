@@ -36,6 +36,9 @@
         process.exit();
       }, 500);
     } else {
+      if (recorded[0].comment) {
+        console.log('next: ' + recorded[0].comment);
+      }
       playbackIntervalID = setTimeout(playback, recorded[0].delay || 40);
     }
   };
