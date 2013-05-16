@@ -98,6 +98,42 @@
         },50);
   }
 
+  var circle = function(circleCount,speed,radius,z){
+    var h = 0,
+    k = 0,
+    count = 0,
+    theta = 0,
+    r = radius || 10,
+    speed = speed || 50,
+    maxcount = circleCount || 1,
+    z = z || -100,
+    step = 2*Math.PI/(2*r);  // see note 1;
+
+    var move = function(){
+      var x = h + r*Math.cos(theta),
+      y = k - r*Math.sin(theta);    //note 2.
+      console.log([x,y,z]);
+      axes[0] = x;
+      axes[1] = y;
+      axes[2] = z;
+      updatePosition();
+      //go(x,y,z);
+      theta += step;
+      if(theta < 2*Math.PI){
+        setTimeout(move,speed);
+      }else{
+        count++;
+        if(count >= maxcount || r <= 1){
+          return moveToOrigin();
+        }
+        //r = (count <= maxcount/2) ? r+3 : r-3; 
+        theta = 0;
+        setTimeout(move,speed);
+      }
+    }
+    move();
+  }
+
   var moveToOrigin = function () {
     moveTo(config.origin.x, config.origin.y, config.origin.z);
   };
@@ -139,7 +175,8 @@
         servos: servos,
         moveTo: moveTo,
         moveToOrigin: moveToOrigin,
-        hoverTo: hoverTo
+        hoverTo: hoverTo,
+        circle: circle
       });
 
       servo1.on('error', function () { console.log(arguments); });
