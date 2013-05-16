@@ -93,12 +93,13 @@
           updatePosition();
           
           if(--steps <= 0 ){
-            clearInterval(inter)
+            clearInterval(inter);
+            //trigger some event
           }
         },50);
   }
 
-  var circle = function(circleCount,speed,radius,z){
+  var drawCircles = function(circleCount,speed,radius,spiral,eight,z){
     var h = 0,
     k = 0,
     count = 0,
@@ -107,17 +108,19 @@
     speed = speed || 50,
     maxcount = circleCount || 1,
     z = z || -100,
-    step = 2*Math.PI/(2*r);  // see note 1;
+    step = 2*Math.PI/(3*r),
+    eight = eight ? 2 : 1,
+    spiral = spiral ? true : false;
 
     var move = function(){
       var x = h + r*Math.cos(theta),
-      y = k - r*Math.sin(theta);    //note 2.
-      console.log([x,y,z]);
+      y = k - r*Math.sin(theta * eight);
+      //console.log([x,y,z]);
       axes[0] = x;
       axes[1] = y;
       axes[2] = z;
       updatePosition();
-      //go(x,y,z);
+      //moveTo(x,y,z);
       theta += step;
       if(theta < 2*Math.PI){
         setTimeout(move,speed);
@@ -126,13 +129,30 @@
         if(count >= maxcount || r <= 1){
           return moveToOrigin();
         }
-        //r = (count <= maxcount/2) ? r+3 : r-3; 
+        if(spiral){
+          r = (count <= maxcount/2) ? r+3 : r-3; 
+        }
         theta = 0;
         setTimeout(move,speed);
       }
     }
     move();
-  }
+  };
+  
+  var draw = {
+    'eight' : function(circleCount, speed, radius, z){
+      drawCircles(circleCount, speed, radius, false, true, z);
+      return "start drawing 8!"
+    },
+    'helix' : function(circleCount, speed, radius, z){
+      drawCircles(circleCount, speed, radius, true, false, z);
+      return "starting helix!"
+    },
+    'circle' : function(circleCount, speed, radius, z){
+      drawCircles(circleCount, speed, radius, false, false, z);
+      return "start circling!"
+    }
+  };
 
   var moveToOrigin = function () {
     moveTo(config.origin.x, config.origin.y, config.origin.z);
@@ -176,7 +196,7 @@
         moveTo: moveTo,
         moveToOrigin: moveToOrigin,
         hoverTo: hoverTo,
-        circle: circle
+        draw: draw
       });
 
       servo1.on('error', function () { console.log(arguments); });
