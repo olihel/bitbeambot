@@ -26,39 +26,59 @@
     });
   };
 
+  var popPosition = function () {
+    return recorded.pop();
+  };
+
   bot.initialize(function () {
     keypress(process.stdin);
     process.stdin.setRawMode(true);
     process.stdin.resume();
 
-    console.log('\n### control x/y axes:   up/down/left/right keys');
-    console.log('### control z axis:     q/a keys');
-    console.log('### start recording:    r key');
-    console.log('### record current pos: space key');
-    console.log('### exit:               esc key');
+    console.log('\n### control x/y axes:         up/down/left/right keys');
+    console.log('### control z axis:           q/a keys');
+    console.log('### start recording:          r key');
+    console.log('### record current pos:       space key');
+    console.log('### delete last recorded pos: backspace key');
+    console.log('### exit:                     esc key');
+
+    var handler = {
+      "escape": function() {
+        if (recorded.length) {
+          recordIntervalID && clearInterval(recordIntervalID);
+          fs.writeFileSync(RECORD_OUTPUT, JSON.stringify(recorded));
+          console.log('recorded movement saved to ' + RECORD_OUTPUT);
+        }
+        bot.moveToOrigin();
+        setTimeout(function () {
+          process.exit();
+        }, 1500);
+      },
+      "r": function() {
+        console.log('start recording');
+        recordIntervalID = setInterval(recordPosition, RECORD_INTERVAL, [RECORD_INTERVAL]);
+      },
+      "space": function() {
+        console.log('record position ' + bot.axes);
+        recordPosition(1000);
+      },
+      "backspace": function() {
+        var pos = popPosition();
+        if (pos) {
+          console.log('deleted position ' + [pos.x, pos.y, pos.z].join(", "));
+        } else {
+          console.log('no recorded position to delete');
+        }
+      },
+      "__default__": function(keyName) {
+        bot.moveRelative(keyName);
+      }
+    };
 
     process.stdin.on('keypress', function (chunk, key) {
-      if (key) {
-        if (key.name === 'escape') {
-          if (recorded.length) {
-            recordIntervalID && clearInterval(recordIntervalID);
-            fs.writeFileSync(RECORD_OUTPUT, JSON.stringify(recorded));
-            console.log('recorded movement saved to ' + RECORD_OUTPUT);
-          }
-          bot.moveToOrigin();
-          setTimeout(function () {
-            process.exit();
-          }, 1500);
-        }
-        if (key.name === 'r') {
-          console.log('start recording');
-          recordIntervalID = setInterval(recordPosition, RECORD_INTERVAL, [RECORD_INTERVAL]);
-        } else if (key.name === 'space') {
-          console.log('record position ' + bot.axes);
-          recordPosition(1000);
-        } else {
-          bot.moveRelative(key.name);
-        }
+      var keyName = key && key.name;
+      if (keyName) {
+        (handler[keyName] || handler["__default__"]).call(null, keyName);  
       }
     });
   });
