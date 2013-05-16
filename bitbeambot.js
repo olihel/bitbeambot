@@ -40,7 +40,7 @@
   var config = fs.existsSync(CONFIG_FILE) ? JSON.parse(fs.readFileSync(CONFIG_FILE)) : CONFIG_DEFAULT;
   var board = new five.Board(config.board);
   var servo1, servo2, servo3, servos;
-  var axes = [0, 0, -100];  // x, y, z
+  var axes = [0, 0, config.origin.z];  // x, y, z
 
   var tweenable = new Tweenable({
     easing: 'easeOutCubic'
@@ -107,11 +107,10 @@
     r = radius || 10,
     speed = speed || 50,
     maxcount = circleCount || 1,
-    z = z || -100,
-    step = 2*Math.PI/(3*r),
+    z = z || config.origin.z,
+    step = 2*Math.PI/(2*r),
     eight = eight ? 2 : 1,
-    spiral = spiral ? true : false;
-
+    spiral = spiral ? true : false;    
     var move = function(){
       var x = h + r*Math.cos(theta),
       y = k - r*Math.sin(theta * eight);
