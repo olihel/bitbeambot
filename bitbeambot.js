@@ -12,7 +12,7 @@
  */
 
 (function(exports){
-  var CONFIG_FILE = 'bitbeambot-config.json';
+  var CONFIG_FILE = '_bitbeambot-config.json';
   var CONFIG_DEFAULT = {
     origin: {
       x: 0,
@@ -25,7 +25,8 @@
       stepZ: 1
     },
     board: {
-      debug: false
+      debug: false,
+      port: 'COM7'
     },
     tween: {
       duration: 400
@@ -46,12 +47,20 @@
     easing: 'easeOutCubic'
   });
 
-  var updatePosition = function () {
-    var angles = ik.inverse(axes[0], axes[1], axes[2]);
+  var updatePosition = function (x,y,z) {
+    var x = x || axes[0];
+    var y = y || axes[1];
+    var z = z || axes[2];
+
+    var angles = ik.inverse(x,y,z);
     servo1.move(angles[1]);
     servo2.move(angles[2]);
     servo3.move(angles[3]);
   };
+
+  var getPositions = function (){
+    return ik.forward(servo1.last.degrees, servo2.last.degrees, servo3.last.degrees);
+  }
 
   var moveTo = function (x, y, z) {
     tweenable.tween({
@@ -71,7 +80,7 @@
   };
 
   var hoverTo = function (x,y,z){
-    var sourceCoords  = ik.forward(servo1.last.degrees, servo2.last.degrees, servo3.last.degrees);
+    var sourceCoords  = getPositions();
     var targetCoords  = [0,x,y,z];
     var steps = 20;
 
@@ -84,7 +93,7 @@
 
     var inter = setInterval(
         function(){
-          var lastCoords  = ik.forward(servo1.last.degrees, servo2.last.degrees, servo3.last.degrees);
+          var lastCoords  = getPositions();
           
           axes[0] = lastCoords[1] + increment[1];
           axes[1] = lastCoords[2] + increment[2];
@@ -96,8 +105,56 @@
             clearInterval(inter);
             //trigger some event
           }
-        },50);
+    },50);
+    return exports;
+  };
+
+  var down = function(){
+    var zDown = -120;
+    var position = getPositions();
+    updatePosition(position[1],position[2],-100); // first go to -100 to throttle down movement
+    setTimeout(updatePosition,100,position[1],position[2],zDown); //down
+    return {'down':zDown,'up':position[3]};
   }
+
+  var up = function(z){
+    var position = getPositions();
+    if(position[3] > -109) return false; // if robot is not down return
+    updatePosition(position[1],position[2],-100); //up
+    setTimeout(updatePosition,100,position[1],position[2],z); //up to latest position
+    
+  }
+
+  var tap = function(){
+    var oz = down();
+    setTimeout(up,250,oz.up);
+    return exports;
+  }
+
+  var swipe = (function(){
+    
+    var swipeIt = function(xTarget){
+      var oz = down();
+      var position = getPositions();
+      setTimeout(updatePosition,200,xTarget,position[2],oz.down);
+      setTimeout(updatePosition,400,xTarget,position[2],oz.up);//hoverTo?
+
+      setTimeout(updatePosition,400,position[1],position[2],oz.up);
+    }
+
+    var left = function(length){
+        var position = getPositions();
+        var l = length || 20;
+        swipeIt(position[1]-l);
+      }
+    var right = function(length){
+        var position = getPositions();
+        var l = length || 20;
+        swipeIt(position[1]+l);
+      }
+
+    return {'left':left,'right':right};
+  })();
 
   var drawCircles = function(circleCount,speed,radius,spiral,eight,z){
     var h = 0,
@@ -129,7 +186,7 @@
           return moveToOrigin();
         }
         if(spiral){
-          r = (count <= maxcount/2) ? r+3 : r-3; 
+          r = (count <= maxcount/2) ? r+3 : r-3;
         }
         theta = 0;
         setTimeout(move,speed);
@@ -195,7 +252,9 @@
         moveTo: moveTo,
         moveToOrigin: moveToOrigin,
         hoverTo: hoverTo,
-        draw: draw
+        draw: draw,
+        tap: tap,
+        swipe: swipe
       });
 
       servo1.on('error', function () { console.log(arguments); });
