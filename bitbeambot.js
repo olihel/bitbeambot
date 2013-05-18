@@ -12,7 +12,7 @@
  */
 
 (function(exports){
-  var CONFIG_FILE = '_bitbeambot-config.json';
+  var CONFIG_FILE = 'bitbeambot-config.json';
   var CONFIG_DEFAULT = {
     origin: {
       x: 0,
@@ -25,8 +25,7 @@
       stepZ: 1
     },
     board: {
-      debug: false,
-      port: 'COM7'
+      debug: false
     },
     tween: {
       duration: 400
@@ -53,9 +52,9 @@
     var z = z || axes[2];
 
     var angles = ik.inverse(x,y,z);
-    servo1.move(angles[1]);
-    servo2.move(angles[2]);
-    servo3.move(angles[3]);
+    servo1.move(angles[1],true);
+    servo2.move(angles[2],true);
+    servo3.move(angles[3],true);
   };
 
   var getPositions = function (){
@@ -109,52 +108,54 @@
     return exports;
   };
 
-  var down = function(){
-    var zDown = -120;
-    var position = getPositions();
-    updatePosition(position[1],position[2],-100); // first go to -100 to throttle down movement
-    setTimeout(updatePosition,100,position[1],position[2],zDown); //down
-    return {'down':zDown,'up':position[3]};
-  }
+ var down = function(){
+   var zDown = -110;
+   var position = getPositions();
+   updatePosition(position[1],position[2],-100); // first go to -100 to throttle down movement
+   setTimeout(updatePosition,100,position[1],position[2],zDown); //down
+   return {'down':zDown,'up':position[3]};
+ }
 
-  var up = function(z){
-    var position = getPositions();
-    if(position[3] > -109) return false; // if robot is not down return
-    updatePosition(position[1],position[2],-100); //up
-    setTimeout(updatePosition,100,position[1],position[2],z); //up to latest position
-    
-  }
+ var up = function(z){
+   var position = getPositions();
+   if(position[3] > -109) return false; // if robot is not down return
+   updatePosition(position[1],position[2],-100); //up
+   setTimeout(updatePosition,100,position[1],position[2],z); //up to latest position
+   
+ }
 
-  var tap = function(){
-    var oz = down();
-    setTimeout(up,250,oz.up);
-    return exports;
-  }
+ var tap = function(){
+   var oz = down();
+   setTimeout(up,250,oz.up);
+   return exports;
+}
+  
+ var swipe = (function(){
+   
+   var swipeIt = function(xTarget,position){
+     var oz = down();
+     var position = getPositions();
+     setTimeout(updatePosition,170,position[1],xTarget,oz.down);
+     setTimeout(updatePosition,300,position[1],xTarget,oz.up);//hoverTo?
 
-  var swipe = (function(){
-    
-    var swipeIt = function(xTarget){
-      var oz = down();
-      var position = getPositions();
-      setTimeout(updatePosition,200,xTarget,position[2],oz.down);
-      setTimeout(updatePosition,400,xTarget,position[2],oz.up);//hoverTo?
+     setTimeout(updatePosition,600,position[1],position[2],oz.up);
+   }
 
-      setTimeout(updatePosition,400,position[1],position[2],oz.up);
-    }
-
-    var left = function(length){
-        var position = getPositions();
-        var l = length || 20;
-        swipeIt(position[1]-l);
-      }
-    var right = function(length){
-        var position = getPositions();
-        var l = length || 20;
-        swipeIt(position[1]+l);
-      }
+   var left = function(length){
+       var position = getPositions();
+       var l = length || 20;
+       swipeIt(position[2]-l,position);
+     }
+   var right = function(length){
+       var position = getPositions();
+       var l = length || 20;
+       swipeIt(position[2]+l,position);
+     }
 
     return {'left':left,'right':right};
   })();
+
+
 
   var drawCircles = function(circleCount,speed,radius,spiral,eight,z){
     var h = 0,
@@ -233,14 +234,22 @@
     } if (direction === 'a') {
       axes[2] += -config.movement.stepZ;
       updatePosition();
+    }if (direction === 't') {
+      tap();
+    }if (direction === 'k') {
+      swipe.right();
+    }if (direction === 'l') {
+      swipe.left();
+    }if (direction === 'c') {
+      moveToOrigin();
     }
   };
 
   var initialize = function (readyHandler) {
     board.on('ready', function() {
-      servo1 = five.Servo({pin: 9});
-      servo2 = five.Servo({pin: 10});
-      servo3 = five.Servo({pin: 11});
+      servo1 = five.Servo({pin: 9);
+      servo2 = five.Servo({pin: 10);
+      servo3 = five.Servo({pin: 11);
       servos = five.Servos();
 
 
@@ -260,6 +269,10 @@
       servo1.on('error', function () { console.log(arguments); });
       servo2.on('error', function () { console.log(arguments); });
       servo3.on('error', function () { console.log(arguments); });
+     
+      servo1.on("move", function( err, degrees ) {
+       //console.log( "NAAARF" );
+      });
 
       moveToOrigin();
 

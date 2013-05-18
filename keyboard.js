@@ -10,6 +10,7 @@
   var bot = require('./bitbeambot');
   var fs = require('fs');
   var keypress = require('keypress');
+  var pauseStart;
 
   var RECORD_INTERVAL = 50;
   var RECORD_OUTPUT = 'recorded.json';
@@ -26,6 +27,18 @@
     });
   };
 
+  var pause = function(){
+    var now = new Date().getTime();
+    if(!pauseStart){ //start
+      console.log('starting pause');
+      pauseStart = now;
+    }else{ //stop
+      console.log('stopped pause');
+      recordPosition(now - pauseStart);
+      pauseStart = null;
+    }
+  }
+
   var popPosition = function () {
     return recorded.pop();
   };
@@ -39,6 +52,9 @@
     console.log('### control z axis:           q/a keys');
     console.log('### start recording:          r key');
     console.log('### record current pos:       space key');
+    console.log('### start/end record pause    p key');
+    console.log('### swipe left/right          l/k keys');
+    console.log('### tap                       t key');
     console.log('### delete last recorded pos: backspace key');
     console.log('### exit:                     esc key');
 
@@ -60,7 +76,11 @@
       },
       "space": function() {
         console.log('record position ' + bot.axes);
+        pauseStart && pause();
         recordPosition(1000);
+      },
+      "p": function(){
+        pause();
       },
       "backspace": function() {
         var pos = popPosition();
