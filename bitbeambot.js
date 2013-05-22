@@ -247,9 +247,9 @@
 
   var initialize = function (readyHandler) {
     board.on('ready', function() {
-      servo1 = five.Servo({pin: 9);
-      servo2 = five.Servo({pin: 10);
-      servo3 = five.Servo({pin: 11);
+      servo1 = five.Servo({pin: 9});
+      servo2 = five.Servo({pin: 10});
+      servo3 = five.Servo({pin: 11});
       servos = five.Servos();
 
 
@@ -271,7 +271,7 @@
       servo3.on('error', function () { console.log(arguments); });
      
       servo1.on("move", function( err, degrees ) {
-       //console.log( "NAAARF" );
+       console.log( "NAAARF" );
       });
 
       moveToOrigin();
