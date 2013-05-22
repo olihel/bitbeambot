@@ -72,7 +72,7 @@
       },
       "r": function() {
         console.log('start recording');
-        recordIntervalID = setInterval(recordPosition, RECORD_INTERVAL, [RECORD_INTERVAL]);
+        recordIntervalID = setInterval(recordPosition, RECORD_INTERVAL, RECORD_INTERVAL);
       },
       "space": function() {
         console.log('record position ' + bot.axes);
