@@ -269,10 +269,6 @@
       servo1.on('error', function () { console.log(arguments); });
       servo2.on('error', function () { console.log(arguments); });
       servo3.on('error', function () { console.log(arguments); });
-     
-      servo1.on("move", function( err, degrees ) {
-       console.log( "NAAARF" );
-      });
 
       moveToOrigin();
 
