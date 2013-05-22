@@ -124,39 +124,6 @@
    
  }
 
- var tap = function(){
-   var oz = down();
-   setTimeout(up,250,oz.up);
-   return exports;
-}
-  
- var swipe = (function(){
-   
-   var swipeIt = function(xTarget,position){
-     var oz = down();
-     var position = getPositions();
-     setTimeout(updatePosition,170,position[1],xTarget,oz.down);
-     setTimeout(updatePosition,300,position[1],xTarget,oz.up);//hoverTo?
-
-     setTimeout(updatePosition,600,position[1],position[2],oz.up);
-   }
-
-   var left = function(length){
-       var position = getPositions();
-       var l = length || 20;
-       swipeIt(position[2]-l,position);
-     }
-   var right = function(length){
-       var position = getPositions();
-       var l = length || 20;
-       swipeIt(position[2]+l,position);
-     }
-
-    return {'left':left,'right':right};
-  })();
-
-
-
   var drawCircles = function(circleCount,speed,radius,spiral,eight,z){
     var h = 0,
     k = 0,
@@ -234,12 +201,6 @@
     } if (direction === 'a') {
       axes[2] += -config.movement.stepZ;
       updatePosition();
-    }if (direction === 't') {
-      tap();
-    }if (direction === 'k') {
-      swipe.right();
-    }if (direction === 'l') {
-      swipe.left();
     }if (direction === 'c') {
       moveToOrigin();
     }
@@ -261,9 +222,7 @@
         moveTo: moveTo,
         moveToOrigin: moveToOrigin,
         hoverTo: hoverTo,
-        draw: draw,
-        tap: tap,
-        swipe: swipe
+        draw: draw
       });
 
       servo1.on('error', function () { console.log(arguments); });

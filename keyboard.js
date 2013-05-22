@@ -53,8 +53,6 @@
     console.log('### start recording:          r key');
     console.log('### record current pos:       space key');
     console.log('### start/end record pause    p key');
-    console.log('### swipe left/right          l/k keys');
-    console.log('### tap                       t key');
     console.log('### delete last recorded pos: backspace key');
     console.log('### exit:                     esc key');
 
