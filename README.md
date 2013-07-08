@@ -30,3 +30,5 @@ node playback.js
 This project is based on work by Jason Huggins ([@github](https://github.com/hugs/bitbeambot), [bitbeam.org](http://bitbeam.org)), he actually provided the hardware parts, too.
 
 Thanks to [SinnerSchrader](http://www.sinnerschrader.com/) for support and the time to work on this project.
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/olihel/bitbeambot/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
