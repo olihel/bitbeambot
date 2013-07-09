@@ -31,4 +31,4 @@ This project is based on work by Jason Huggins ([@github](https://github.com/hug
 
 Thanks to [SinnerSchrader](http://www.sinnerschrader.com/) for support and the time to work on this project.
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/olihel/bitbeambot/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+[![githalytics.com alpha](https://cruel-carlota.gopagoda.com/0ae7ef89b04a5db28dc610346a763fc2 "githalytics.com")](http://githalytics.com/olihel/bitbeambot)
