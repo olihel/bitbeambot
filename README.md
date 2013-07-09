@@ -2,6 +2,8 @@
 
 ## The video game playing, software testing robot. 
 
+[![bitbeambot on YouTube](https://raw.github.com/olihel/bitbeambot/master/video-preview.jpg)](http://www.youtube.com/watch?v=nnEBgGhImbA)
+
 ### Setup instructions (OSX)
 
 - download and install [Arduino IDE](http://arduino.cc/en/Main/Software)
