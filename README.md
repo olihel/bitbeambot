@@ -33,4 +33,4 @@ This project is based on work by Jason Huggins ([@github](https://github.com/hug
 
 Thanks to [SinnerSchrader](http://www.sinnerschrader.com/) for support and the time to work on this project.
 
-[![githalytics.com alpha](https://cruel-carlota.gopagoda.com/0ae7ef89b04a5db28dc610346a763fc2 "githalytics.com")](http://githalytics.com/olihel/bitbeambot)
+[![githalytics.com alpha](https://cruel-carlota.gopagoda.com/4397db1898e2d1bbd187fb1856c11cb8 "githalytics.com")](http://githalytics.com/olihel/bitbeambot)
